@@ -25,7 +25,7 @@ class QuestionResponse(BaseModel):
 
 
 # Routes
-@router.get("/", response_model=List[QuestionResponse])
+@router.get("", response_model=List[QuestionResponse])
 async def get_all_questions(db: Session = Depends(get_db)):
     """
     Get all 100 questions (88 IMCO + 12 FDAC) ordered by sequence.

@@ -107,7 +107,7 @@ async def generate_report(
     )
 
 
-@router.get("/", response_model=List[ReportResponse])
+@router.get("", response_model=List[ReportResponse])
 async def list_reports(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)

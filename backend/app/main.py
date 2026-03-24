@@ -66,6 +66,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Proxy headers - ensures redirects use the correct host
+from fastapi.middleware.proxy_headers import ProxyHeadersMiddleware
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=["*"])
+
 # Security headers
 if not settings.DEBUG:
     app.add_middleware(

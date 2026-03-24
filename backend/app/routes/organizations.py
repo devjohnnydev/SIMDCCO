@@ -33,7 +33,7 @@ class OrganizationResponse(BaseModel):
 
 
 # Routes
-@router.post("/", response_model=OrganizationResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=OrganizationResponse, status_code=status.HTTP_201_CREATED)
 async def create_organization(
     org: OrganizationCreate,
     db: Session = Depends(get_db),
@@ -80,7 +80,7 @@ async def create_organization(
     )
 
 
-@router.get("/", response_model=List[OrganizationResponse])
+@router.get("", response_model=List[OrganizationResponse])
 async def list_organizations(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
