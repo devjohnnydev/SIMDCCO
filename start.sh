@@ -50,12 +50,12 @@ echo "Initializing database and seeding data..."
 $PYTHON_CMD seed.py
 
 # Start backend in background
-BACKEND_PORT=${PORT:-8000}
-echo "Starting backend server on port $BACKEND_PORT..."
-uvicorn app.main:app --host 0.0.0.0 --port $BACKEND_PORT &
+BACKEND_PORT=8000
+echo "Starting backend server on port 127.0.0.1:$BACKEND_PORT..."
+uvicorn app.main:app --host 127.0.0.1 --port $BACKEND_PORT &
 BACKEND_PID=$!
-echo "${GREEN}✅ Backend running on http://localhost:$BACKEND_PORT${NC}"
-echo "   API Docs: http://localhost:8000/api/docs"
+echo "${GREEN}✅ Backend running on http://127.0.0.1:$BACKEND_PORT${NC}"
+echo "   API Docs: http://127.0.0.1:8000/api/docs"
 
 cd ..
 
@@ -77,6 +77,7 @@ fi
 
 # Start frontend
 echo "Starting frontend server..."
+export PORT=${PORT:-3000}
 if [ "$NIXPACKS_PHASE" = "start" ] || [ -n "$RAILWAY_ENVIRONMENT" ]; then
     npm run start &
 else
