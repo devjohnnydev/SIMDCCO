@@ -47,12 +47,14 @@ class Settings(BaseSettings):
     # Hash Salt (per organization - this is the master salt)
     MASTER_SALT: str = "simdcco-master-salt-change-in-production"
     
-    # System Timezone
-    TIMEZONE: str = "America/Sao_Paulo"
-    
+    # WhatsApp API (opcional - Fase 2)
+    WHATSAPP_API_URL: str = ""
+    WHATSAPP_API_TOKEN: str = ""
+
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"
 
 
 # Global settings instance
