@@ -6,12 +6,15 @@ import axios from 'axios'
 // Use empty string for relative paths, which will be caught by Next.js rewrites proxy
 const API_URL = ''
 
+// Forçando baseURL como relativo para usar o proxy do Next.js
 export const api = axios.create({
-    baseURL: `${API_URL}/api`,
+    baseURL: '/api',
     headers: {
         'Content-Type': 'application/json',
     },
 })
+
+console.log('SIMDCCO: API Base URL initialized as:', api.defaults.baseURL);
 
 // Add auth token to requests
 api.interceptors.request.use((config) => {
