@@ -3,12 +3,8 @@
  */
 import axios from 'axios'
 
-let API_URL = process.env.NEXT_PUBLIC_API_URL || ''
-
-// Force relative paths if it looks like a local environment in production
-if (API_URL.includes('localhost') || API_URL.includes('127.0.0.1')) {
-    API_URL = ''
-}
+// Use empty string for relative paths, which will be caught by Next.js rewrites proxy
+const API_URL = ''
 
 export const api = axios.create({
     baseURL: `${API_URL}/api`,
