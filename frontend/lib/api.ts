@@ -3,7 +3,12 @@
  */
 import axios from 'axios'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || ''
+let API_URL = process.env.NEXT_PUBLIC_API_URL || ''
+
+// Force relative paths if it looks like a local environment in production
+if (API_URL.includes('localhost') || API_URL.includes('127.0.0.1')) {
+    API_URL = ''
+}
 
 export const api = axios.create({
     baseURL: `${API_URL}/api`,
