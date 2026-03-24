@@ -186,17 +186,27 @@ def create_admin_user():
             print("⚠️  Admin user already exists.")
             return
         
-        print("👤 Creating admin user...")
+        print("👤 Creating admin user and default organization...")
+        from app.models.organization import Organization
+        default_org = Organization(
+            cnpj_hash="default_hash",
+            razao_social="SIMDCCO Default Admin Org",
+            nome_fantasia="SIMDCCO Admin"
+        )
+        db.add(default_org)
+        db.flush() # Get ID
+        
         admin = User(
             email="admin@simdcco.com",
             password_hash=hash_password("admin123"),  # CHANGE IN PRODUCTION!
             name="Administrador SIMDCCO",
             role=UserRole.ADMIN,
+            organization_id=default_org.id,
             is_active=True
         )
         db.add(admin)
         db.commit()
-        print("✅ Admin user created!")
+        print("✅ Admin user and default organization created!")
         print("   Email: admin@simdcco.com")
         print("   Password: admin123")
         print("   ⚠️  CHANGE PASSWORD IN PRODUCTION!")

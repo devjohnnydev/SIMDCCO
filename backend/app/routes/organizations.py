@@ -69,6 +69,11 @@ async def create_organization(
     )
     
     db.add(new_org)
+    
+    # If user has no organization, link this one to them
+    if not current_user.organization_id:
+        current_user.organization_id = new_org.id
+        
     db.commit()
     db.refresh(new_org)
     
