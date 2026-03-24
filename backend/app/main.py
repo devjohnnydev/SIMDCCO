@@ -67,7 +67,7 @@ app.add_middleware(
 )
 
 # Proxy headers - ensures redirects use the correct host
-from fastapi.middleware.proxy_headers import ProxyHeadersMiddleware
+from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
 app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=["*"])
 
 # Security headers
