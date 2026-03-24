@@ -34,26 +34,10 @@ else
 fi
 echo "Using Python command: $PYTHON_CMD"
 
-# Check if virtual environment exists
-if [ ! -d "venv" ]; then
-    echo "Creating Python virtual environment..."
-    $PYTHON_CMD -m venv venv
-fi
-
-# Activate virtual environment
-source venv/bin/activate || source venv/Scripts/activate
-
-# Install dependencies
-echo "Installing Python dependencies..."
-pip install -q -r requirements.txt
-
 # Check if .env exists
 if [ ! -f ".env" ]; then
     echo "${YELLOW}⚠️  No .env file found. Creating from example...${NC}"
     cp .env.example .env
-    echo "${YELLOW}⚠️  Please edit backend/.env with your database credentials${NC}"
-    echo "Press Enter to continue after editing .env..."
-    read
 fi
 
 # Run database seed
@@ -61,10 +45,11 @@ echo "Initializing database and seeding data..."
 $PYTHON_CMD seed.py
 
 # Start backend in background
-echo "Starting backend server..."
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 > /dev/null 2>&1 &
+BACKEND_PORT=${PORT:-8000}
+echo "Starting backend server on port $BACKEND_PORT..."
+uvicorn app.main:app --host 0.0.0.0 --port $BACKEND_PORT &
 BACKEND_PID=$!
-echo "${GREEN}✅ Backend running on http://localhost:8000${NC}"
+echo "${GREEN}✅ Backend running on http://localhost:$BACKEND_PORT${NC}"
 echo "   API Docs: http://localhost:8000/api/docs"
 
 cd ..
@@ -86,11 +71,15 @@ if [ ! -f ".env.local" ]; then
 fi
 
 # Start frontend
-echo "Starting frontend development server..."
-npm run dev > /dev/null 2>&1 &
+echo "Starting frontend server..."
+if [ "$NIXPACKS_PHASE" = "start" ] || [ -n "$RAILWAY_ENVIRONMENT" ]; then
+    npm run start &
+else
+    npm run dev &
+fi
 FRONTEND_PID=$!
 
-echo "${GREEN}✅ Frontend running on http://localhost:3000${NC}"
+echo "${GREEN}✅ Frontend running${NC}"
 
 cd ..
 
