@@ -3,18 +3,17 @@
  */
 import axios from 'axios'
 
-// Use empty string for relative paths, which will be caught by Next.js rewrites proxy
-const API_URL = ''
+// FORÇANDO CAMINHO RELATIVO - BUILD TIMESTAMP: 2026-03-24-1050
+const SITE_API_PATH = '/api'
 
-// Forçando baseURL como relativo para usar o proxy do Next.js
 export const api = axios.create({
-    baseURL: '/api',
+    baseURL: SITE_API_PATH,
     headers: {
         'Content-Type': 'application/json',
     },
 })
 
-console.log('SIMDCCO: API Base URL initialized as:', api.defaults.baseURL);
+console.log('SIMDCCO: API Base URL initialized:', SITE_API_PATH, 'at 2026-03-24-1050');
 
 // Add auth token to requests
 api.interceptors.request.use((config) => {
