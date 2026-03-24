@@ -1,0 +1,124 @@
+#!/bin/bash
+
+# SIMDCCO Quick Start Script
+# This script sets up and runs both backend and frontend
+
+set -e
+
+echo "🚀 SIMDCCO Quick Start"
+echo "======================="
+echo ""
+
+# Colors
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Check if running in SIMDCCO directory
+if [ ! -d "backend" ] || [ ! -d "frontend" ]; then
+    echo "❌ Error: Please run this script from the SIMDCCO root directory"
+    exit 1
+fi
+
+echo "📦 Step 1: Setting up Backend..."
+cd backend
+
+# Detect Python command
+if command -v python3 &>/dev/null; then
+    PYTHON_CMD=python3
+elif command -v python &>/dev/null; then
+    PYTHON_CMD=python
+else
+    echo "❌ Error: Python not found. Please install Python."
+    exit 1
+fi
+echo "Using Python command: $PYTHON_CMD"
+
+# Check if virtual environment exists
+if [ ! -d "venv" ]; then
+    echo "Creating Python virtual environment..."
+    $PYTHON_CMD -m venv venv
+fi
+
+# Activate virtual environment
+source venv/bin/activate || source venv/Scripts/activate
+
+# Install dependencies
+echo "Installing Python dependencies..."
+pip install -q -r requirements.txt
+
+# Check if .env exists
+if [ ! -f ".env" ]; then
+    echo "${YELLOW}⚠️  No .env file found. Creating from example...${NC}"
+    cp .env.example .env
+    echo "${YELLOW}⚠️  Please edit backend/.env with your database credentials${NC}"
+    echo "Press Enter to continue after editing .env..."
+    read
+fi
+
+# Run database seed
+echo "Initializing database and seeding data..."
+$PYTHON_CMD seed.py
+
+# Start backend in background
+echo "Starting backend server..."
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 > /dev/null 2>&1 &
+BACKEND_PID=$!
+echo "${GREEN}✅ Backend running on http://localhost:8000${NC}"
+echo "   API Docs: http://localhost:8000/api/docs"
+
+cd ..
+
+echo ""
+echo "📦 Step 2: Setting up Frontend..."
+cd frontend
+
+# Check if node_modules exists
+if [ ! -d "node_modules" ]; then
+    echo "Installing Node.js dependencies..."
+    npm install
+fi
+
+# Check if .env.local exists
+if [ ! -f ".env.local" ]; then
+    echo "Creating .env.local..."
+    cp .env.local.example .env.local
+fi
+
+# Start frontend
+echo "Starting frontend development server..."
+npm run dev > /dev/null 2>&1 &
+FRONTEND_PID=$!
+
+echo "${GREEN}✅ Frontend running on http://localhost:3000${NC}"
+
+cd ..
+
+echo ""
+echo "════════════════════════════════════"
+echo "${GREEN}✨ SIMDCCO is now running!${NC}"
+echo "════════════════════════════════════"
+echo ""
+echo "📍 URLs:"
+echo "   • Frontend: http://localhost:3000"
+echo "   • Backend:  http://localhost:8000"
+echo "   • API Docs: http://localhost:8000/api/docs"
+echo ""
+echo "🔑 Default Admin Credentials:"
+echo "   • Email:    admin@simdcco.com"
+echo "   • Password: admin123"
+echo "   ${YELLOW}⚠️  CHANGE PASSWORD IN PRODUCTION!${NC}"
+echo ""
+echo "📋 Next Steps:"
+echo "   1. Open http://localhost:3000 in your browser"
+echo "   2. Test the respondent flow"
+echo "   3. Login to admin panel"
+echo ""
+echo "Press Ctrl+C to stop all servers..."
+echo ""
+
+# Wait for interrupt
+trap "echo ''; echo 'Stopping servers...'; kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; echo '${GREEN}✅ Servers stopped${NC}'; exit 0" INT
+
+# Keep script running
+wait

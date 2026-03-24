@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Fonts - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* Premium Design System Utilities */
+@layer base {
+  * {
+    @apply border-neutral-300;
+  }
+  
+  body {
+    @apply bg-neutral-50 text-neutral-900 font-sans antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-semibold;
+  }
+}
+
+@layer components {
+  /* Premium Button Styles */
+  .btn-primary {
+    @apply bg-primary-900 text-white px-6 py-3 rounded-lg font-medium
+           hover:bg-primary-700 transition-all duration-200
+           shadow-md hover:shadow-lg active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-700 text-white px-6 py-3 rounded-lg font-medium
+           hover:bg-secondary-500 transition-all duration-200
+           shadow-md hover:shadow-lg active:scale-95;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-primary-900 text-primary-900 px-6 py-3 rounded-lg font-medium
+           hover:bg-primary-900 hover:text-white transition-all duration-200
+           active:scale-95;
+  }
+  
+  /* Card Styles */
+  .card {
+    @apply bg-white rounded-xl shadow-md p-6 border border-neutral-200;
+  }
+  
+  .card-premium {
+    @apply bg-white rounded-xl shadow-premium p-8 border border-neutral-200;
+  }
+  
+  /* Input Styles */
+  .input {
+    @apply w-full px-4 py-3 border-2 border-neutral-300 rounded-lg
+           focus:border-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-300
+           transition-all duration-200;
+  }
+  
+  /* Legal/Technical Text */
+  .text-legal {
+    @apply text-sm text-neutral-600 leading-relaxed;
+  }
+  
+  /* Progress Bar */
+  .progress-bar {
+    @apply h-2 bg-neutral-200 rounded-full overflow-hidden;
+  }
+  
+  .progress-fill {
+    @apply h-full bg-gradient-to-r from-primary-700 to-secondary-500 transition-all duration-300;
+  }
+  
+  /* Alert Styles */
+  .alert-warning {
+    @apply bg-warning-500 bg-opacity-10 border-l-4 border-warning-500 p-4 rounded;
+  }
+  
+  .alert-danger {
+    @apply bg-danger-700 bg-opacity-10 border-l-4 border-danger-700 p-4 rounded;
+  }
+  
+  /* Risk Level Badges */
+  .badge-low {
+    @apply bg-secondary-500 bg-opacity-20 text-secondary-700 px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .badge-medium {
+    @apply bg-warning-500 bg-opacity-20 text-warning-500 px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .badge-high {
+    @apply bg-danger-700 bg-opacity-20 text-danger-700 px-3 py-1 rounded-full text-sm font-medium;
+  }
+}
+
+@layer utilities {
+  /* Micro-animations */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Smooth hover lift */
+  .hover-lift {
+    @apply transition-transform duration-200 hover:-translate-y-1;
+  }
+}
