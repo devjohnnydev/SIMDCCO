@@ -29,6 +29,11 @@ if command -v python3 &>/dev/null; then
 elif command -v python &>/dev/null; then
     PYTHON_CMD=python
 else
+    # In Docker, we know it's there, but let's be safe
+    PYTHON_CMD=$(which python3 || which python)
+fi
+
+if [ -z "$PYTHON_CMD" ]; then
     echo "❌ Error: Python not found. Please install Python."
     exit 1
 fi
