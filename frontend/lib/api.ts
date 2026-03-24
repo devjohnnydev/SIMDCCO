@@ -56,7 +56,7 @@ export const apiService = {
     }) => api.post('/respondents/consent', data),
 
     // Questionnaires
-    getAllQuestions: () => api.get('/questionnaires/'),
+    getAllQuestions: () => api.get('/questionnaires'),
 
     // Responses
     submitResponse: (data: {
@@ -69,13 +69,13 @@ export const apiService = {
     }) => api.post('/responses/submit', data),
 
     // Organizations
-    getOrganizations: () => api.get('/organizations/'),
+    getOrganizations: () => api.get('/organizations'),
     getOrganization: (id: string) => api.get(`/organizations/${id}`),
     createOrganization: (data: {
         cnpj: string
         razao_social: string
         nome_fantasia?: string
-    }) => api.post('/organizations/', data),
+    }) => api.post('/organizations', data),
     updateOrganization: (id: string, data: {
         razao_social?: string
         nome_fantasia?: string
@@ -83,13 +83,13 @@ export const apiService = {
     deleteOrganization: (id: string) => api.delete(`/organizations/${id}`),
 
     // Campaigns
-    getCampaigns: () => api.get('/campaigns/'),
+    getCampaigns: () => api.get('/campaigns'),
     createCampaign: (data: {
         name: string
         description?: string
         start_date: string
         end_date?: string
-    }) => api.post('/campaigns/', data),
+    }) => api.post('/campaigns', data),
     getCampaign: (id: string) => api.get(`/campaigns/${id}`),
     updateCampaign: (id: string, data: any) => api.patch(`/campaigns/${id}`, data),
     toggleCampaign: (id: string) => api.post(`/campaigns/${id}/toggle`),
@@ -106,7 +106,7 @@ export const apiService = {
     // Reports
     generateReport: (data: { report_type: string; department_id?: string }) =>
         api.post('/reports/generate', data),
-    getReports: () => api.get('/reports/'),
+    getReports: () => api.get('/reports'),
     downloadReport: (reportId: string) =>
         api.get(`/reports/${reportId}/download`, { responseType: 'blob' }),
 
