@@ -89,6 +89,7 @@ export const apiService = {
         description?: string
         start_date: string
         end_date?: string
+        organization_id?: string
     }) => api.post('/campaigns', data),
     getCampaign: (id: string) => api.get(`/campaigns/${id}`),
     updateCampaign: (id: string, data: any) => api.patch(`/campaigns/${id}`, data),

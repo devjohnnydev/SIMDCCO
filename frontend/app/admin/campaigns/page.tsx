@@ -12,16 +12,31 @@ export default function CampaignsPage() {
     const [loading, setLoading] = useState(true)
     const [showCreateModal, setShowCreateModal] = useState(false)
     const [creating, setCreating] = useState(false)
+    const [organizations, setOrganizations] = useState<any[]>([])
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         start_date: new Date().toISOString().split('T')[0],
-        end_date: ''
+        end_date: '',
+        organization_id: ''
     })
 
     useEffect(() => {
         loadCampaigns()
+        loadOrganizations()
     }, [])
+
+    const loadOrganizations = async () => {
+        try {
+            const response = await apiService.getOrganizations()
+            setOrganizations(response.data)
+            if (response.data.length > 0) {
+                setFormData(prev => ({ ...prev, organization_id: response.data[0].id }))
+            }
+        } catch (error) {
+            console.error('Error loading organizations:', error)
+        }
+    }
 
     const loadCampaigns = async () => {
         try {
@@ -45,7 +60,8 @@ export default function CampaignsPage() {
                 name: formData.name,
                 description: formData.description,
                 start_date: new Date(formData.start_date).toISOString(),
-                end_date: formData.end_date ? new Date(formData.end_date).toISOString() : undefined
+                end_date: formData.end_date ? new Date(formData.end_date).toISOString() : undefined,
+                organization_id: formData.organization_id || undefined
             })
 
             setShowCreateModal(false)
@@ -53,7 +69,8 @@ export default function CampaignsPage() {
                 name: '',
                 description: '',
                 start_date: new Date().toISOString().split('T')[0],
-                end_date: ''
+                end_date: '',
+                organization_id: organizations.length > 0 ? organizations[0].id : ''
             })
             loadCampaigns()
         } catch (error) {
@@ -73,7 +90,7 @@ export default function CampaignsPage() {
     }
 
     const copyLink = (slug: string) => {
-        const link = `${window.location.origin}/respondent?c=${slug}`
+        const link = `${window.location.host}/respondent?c=${slug}`
         navigator.clipboard.writeText(link)
         alert('Link copiado para a área de transferência!')
     }
@@ -194,7 +211,7 @@ export default function CampaignsPage() {
                                         <div className="flex-1">
                                             <p className="text-xs text-neutral-500 mb-1">Link da Campanha:</p>
                                             <code className="text-sm bg-neutral-100 px-3 py-2 rounded block">
-                                                {window.location.origin}/respondent?c={campaign.slug}
+                                                {typeof window !== 'undefined' ? window.location.host : ''}/respondent?c={campaign.slug}
                                             </code>
                                         </div>
                                         <button
@@ -229,6 +246,28 @@ export default function CampaignsPage() {
                             </h2>
 
                             <form onSubmit={handleCreateCampaign} className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                                        Organização *
+                                    </label>
+                                    <select
+                                        className="input"
+                                        required
+                                        value={formData.organization_id}
+                                        onChange={(e) => setFormData({ ...formData, organization_id: e.target.value })}
+                                    >
+                                        {organizations.map(org => (
+                                            <option key={org.id} value={org.id}>
+                                                {org.razao_social}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {organizations.length === 0 && (
+                                        <p className="text-xs text-secondary-700 mt-1">
+                                            ⚠️ Nenhuma organização cadastrada. Crie uma primeiro no menu Organizações.
+                                        </p>
+                                    )}
+                                </div>
                                 <div>
                                     <label className="block text-sm font-medium text-neutral-700 mb-2">
                                         Nome da Campanha *

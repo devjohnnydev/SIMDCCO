@@ -22,6 +22,7 @@ class CampaignCreate(BaseModel):
     description: str | None = None
     start_date: datetime
     end_date: datetime | None = None
+    organization_id: uuid.UUID | None = None
 
 
 class CampaignUpdate(BaseModel):
@@ -55,11 +56,22 @@ async def create_campaign(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Create a new diagnostic campaign"""
-    if not current_user.organization_id:
+    # Determine organization ID
+    org_id = campaign.organization_id or current_user.organization_id
+    
+    if not org_id:
+        # If Admin, try to find any organization to associate with
+        from ..models.user import UserRole
+        if current_user.role == UserRole.ADMIN:
+            from ..models.organization import Organization
+            first_org = db.query(Organization).first()
+            if first_org:
+                org_id = first_org.id
+        
+    if not org_id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User must belong to an organization"
+            detail="Nenhuma organização encontrada. Crie uma organização primeiro."
         )
     
     # Generate unique slug
@@ -68,7 +80,7 @@ async def create_campaign(
     try:
         # Create campaign
         new_campaign = Campaign(
-            organization_id=current_user.organization_id,
+            organization_id=org_id,
             name=campaign.name,
             description=campaign.description,
             slug=slug,
