@@ -14,7 +14,10 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     
     # Database (SQLite for local development, PostgreSQL for production)
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./simdcco.db")
+    _db_url = os.getenv("DATABASE_URL", "sqlite:///./simdcco.db")
+    if _db_url.startswith("postgres://"):
+        _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL: str = _db_url
     
     # Security
     SECRET_KEY: str = "your-secret-key-change-in-production"
