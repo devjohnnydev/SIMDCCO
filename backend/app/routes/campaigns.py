@@ -57,7 +57,9 @@ async def create_campaign(
     current_user: User = Depends(get_current_user)
 ):
     # Determine organization ID
+    print(f"DEBUG: Creating campaign for user {current_user.email} (Org: {current_user.organization_id})")
     org_id = campaign.organization_id or current_user.organization_id
+    print(f"DEBUG: Initial org_id: {org_id}")
     
     if not org_id:
         # If Admin, try to find any organization to associate with
@@ -67,8 +69,10 @@ async def create_campaign(
             first_org = db.query(Organization).first()
             if first_org:
                 org_id = first_org.id
+                print(f"DEBUG: Admin fallback to first org_id: {org_id}")
         
     if not org_id:
+        print("DEBUG: No organization found for campaign")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Nenhuma organização encontrada. Crie uma organização primeiro."
@@ -76,9 +80,11 @@ async def create_campaign(
     
     # Generate unique slug
     slug = secrets.token_urlsafe(16)
+    print(f"DEBUG: Generated slug: {slug}")
     
     try:
         # Create campaign
+        print(f"DEBUG: Instantiating Campaign model for {campaign.name}")
         new_campaign = Campaign(
             organization_id=org_id,
             name=campaign.name,
@@ -90,16 +96,19 @@ async def create_campaign(
             created_by=current_user.id
         )
         
+        print(f"DEBUG: Adding campaign to DB: {new_campaign.name}")
         db.add(new_campaign)
         db.commit()
         db.refresh(new_campaign)
+        print(f"DEBUG: Campaign created successfully: {new_campaign.id}")
     except Exception as e:
         import traceback
         traceback.print_exc()
         db.rollback()
+        print(f"DEBUG: Campaign creation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Error creating campaign: {str(e)}"
+            detail=f"Erro ao criar campanha: {str(e)}"
         )
     
     # Get response count (safely)

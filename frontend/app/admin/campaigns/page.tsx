@@ -90,9 +90,14 @@ export default function CampaignsPage() {
     }
 
     const copyLink = (slug: string) => {
-        const link = `${window.location.host}/respondent?c=${slug}`
+        const link = `${window.location.origin}/respondent?c=${slug}`
         navigator.clipboard.writeText(link)
         alert('Link copiado para a área de transferência!')
+    }
+
+    const openCreateModal = () => {
+        loadOrganizations()
+        setShowCreateModal(true)
     }
 
     return (
@@ -128,7 +133,7 @@ export default function CampaignsPage() {
                         </p>
                     </div>
                     <button
-                        onClick={() => setShowCreateModal(true)}
+                        onClick={openCreateModal}
                         className="btn-primary flex items-center"
                     >
                         <Plus className="h-5 w-5 mr-2" />
@@ -152,7 +157,7 @@ export default function CampaignsPage() {
                             para enviar aos respondentes.
                         </p>
                         <button
-                            onClick={() => setShowCreateModal(true)}
+                            onClick={openCreateModal}
                             className="btn-primary inline-flex items-center"
                         >
                             <Plus className="h-5 w-5 mr-2" />
@@ -211,7 +216,7 @@ export default function CampaignsPage() {
                                         <div className="flex-1">
                                             <p className="text-xs text-neutral-500 mb-1">Link da Campanha:</p>
                                             <code className="text-sm bg-neutral-100 px-3 py-2 rounded block">
-                                                {typeof window !== 'undefined' ? window.location.host : ''}/respondent?c={campaign.slug}
+                                                {typeof window !== 'undefined' ? window.location.origin : ''}/respondent?c={campaign.slug}
                                             </code>
                                         </div>
                                         <button

@@ -109,6 +109,16 @@ async def login(
     
     # Update last login
     user.last_login = get_current_time()
+    
+    # Auto-link Admin to an organization if they don't have one
+    from ..models.user import UserRole
+    if user.role == UserRole.ADMIN and not user.organization_id:
+        from ..models.organization import Organization
+        first_org = db.query(Organization).first()
+        if first_org:
+            user.organization_id = first_org.id
+            print(f"DEBUG: Auto-linked admin {user.email} to organization {first_org.razao_social}")
+            
     db.commit()
     
     # Create tokens
