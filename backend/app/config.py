@@ -51,6 +51,9 @@ class Settings(BaseSettings):
     WHATSAPP_API_URL: str = ""
     WHATSAPP_API_TOKEN: str = ""
 
+    # System Timezone
+    TIMEZONE: str = "America/Sao_Paulo"
+
     class Config:
         env_file = ".env"
         case_sensitive = True
