@@ -66,10 +66,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Proxy headers - ensures redirects use the correct host
-from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
-app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=["*"])
-
+# Proxy headers - handled via uvicorn flags in start.sh
 # Security headers
 if not settings.DEBUG:
     app.add_middleware(
